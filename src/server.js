@@ -7,6 +7,14 @@ const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const app = express();
 const port = 3000;
 
+app.use('/output', (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "*");
+    res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
+    next();
+  });
+  
+
 // Set FFmpeg path
 ffmpeg.setFfmpegPath(ffmpegPath);
 

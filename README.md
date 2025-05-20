@@ -152,6 +152,38 @@ The API returns appropriate HTTP status codes and error messages:
 - Processed HLS files are stored in the `output` directory
 - Video metadata is stored in `data.json`
 
+## Deployment Considerations
+
+### Nginx Configuration
+
+When deploying this API behind Nginx (common on AWS, DigitalOcean, etc.), you need to increase the maximum allowed request body size to accommodate large video uploads:
+
+1. Edit your Nginx configuration:
+   ```bash
+   sudo nano /etc/nginx/nginx.conf
+   # OR
+   sudo nano /etc/nginx/sites-available/your-site
+   ```
+
+2. Add the following line inside the http or server block:
+   ```
+   client_max_body_size 2048M;  # Allows uploads up to 2GB
+   ```
+
+3. Restart Nginx:
+   ```bash
+   sudo systemctl restart nginx
+   ```
+
+Without this configuration, you'll encounter a `413 Request Entity Too Large` error when attempting to upload videos.
+
+### Load Balancer Settings
+
+If you're using a load balancer (like AWS ELB/ALB):
+
+1. Increase the timeout settings to accommodate large file uploads
+2. Ensure any proxy settings are configured to handle large request bodies
+
 ## License
 
 ISC
