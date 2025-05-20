@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Upload & Processing</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Video Upload & Processing</h1>
+            <p>Upload your videos for HLS conversion and streaming</p>
+        </header>
+
+        <section class="upload-section">
+            <div class="upload-container" id="upload-container">
+                <div class="upload-area" id="upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag & drop your video here</p>
+                    <p>or</p>
+                    <label for="file-input" class="upload-button">Select Video</label>
+                    <input type="file" id="file-input" accept="video/*" hidden>
+                    <p class="file-info" id="file-info">Supported formats: MP4, MOV, AVI, WMV, MKV (Max: 2GB)</p>
+                </div>
+                <div class="upload-progress" id="upload-progress" style="display: none;">
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <p id="progress-text">0%</p>
+                    <p id="upload-status">Uploading...</p>
+                    <button id="cancel-upload" class="cancel-button">Cancel</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="videos-section">
+            <h2>Your Videos</h2>
+            <div class="video-grid" id="video-grid">
+                <div class="loading" id="loading-videos">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading videos...</p>
+                </div>
+            </div>
+        </section>
+
+        <div id="video-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2 id="modal-title">Video Title</h2>
+                <div class="video-player-container">
+                    <video id="video-player" controls></video>
+                </div>
+                <div class="video-details">
+                    <p><strong>Uploaded:</strong> <span id="modal-date"></span></p>
+                    <p><strong>Size:</strong> <span id="modal-size"></span></p>
+                    <p><strong>Format:</strong> <span id="modal-format"></span></p>
+                    <div class="video-url-container">
+                        <p><strong>URL:</strong></p>
+                        <div class="url-copy-container">
+                            <input type="text" id="video-url" readonly>
+                            <button id="copy-url-btn" class="copy-btn" title="Copy URL">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button id="delete-video-btn" class="delete-btn">
+                        <i class="fas fa-trash"></i> Delete Video
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="app.js"></script>
+</body>
+</html>

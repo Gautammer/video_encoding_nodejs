@@ -229,6 +229,9 @@ const convertToHLS = (inputPath, outputDir, videoId) => {
 
 app.use(express.json());
 
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, '../public')));
+
 // Get list of uploaded videos
 app.get('/videos', (req, res) => {
     try {
@@ -312,6 +315,47 @@ app.post('/upload', (req, res) => {
             });
         }
     });
+});
+
+// Delete video endpoint
+app.delete('/videos/:id', async (req, res) => {
+    try {
+        const videoId = req.params.id;
+        
+        // Read current data
+        const data = fs.existsSync(dataFilePath) 
+            ? fs.readJsonSync(dataFilePath) 
+            : { videos: [] };
+        
+        // Find the video
+        const videoIndex = data.videos.findIndex(v => v.id === videoId);
+        
+        if (videoIndex === -1) {
+            return res.status(404).json({ error: 'Video not found' });
+        }
+        
+        const video = data.videos[videoIndex];
+        const videoDir = path.join(outputDir, videoId);
+        
+        // Remove video files
+        if (fs.existsSync(videoDir)) {
+            await fs.remove(videoDir);
+        }
+        
+        // Remove from data
+        data.videos.splice(videoIndex, 1);
+        
+        // Save updated data
+        await fs.writeJson(dataFilePath, data, { spaces: 2 });
+        
+        res.json({ message: 'Video deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting video:', error);
+        res.status(500).json({ 
+            error: 'Failed to delete video',
+            details: error.message 
+        });
+    }
 });
 
 // Serve uploaded files
