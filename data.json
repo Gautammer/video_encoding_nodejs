@@ -1,0 +1,17 @@
+{
+  "videos": [
+   
+    {
+      "id": "1747751676353",
+      "originalName": "capture_2025-05-11_01-57-33.mp4",
+      "hlsPath": "/output/1747751676353/playlist.m3u8",
+      "size": 533735029,
+      "sizeMB": 509.01,
+      "mimeType": "application/x-mpegURL",
+      "uploadedAt": "2025-05-20T14:36:52.197Z",
+      "status": "completed",
+      "format": "HLS",
+      "segmentDuration": 2
+    }
+  ]
+}
