@@ -24,37 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentXhr = null;
     let currentVideoId = null; // To track which video is currently open in the modal
     const apiBaseUrl = window.location.origin; // Assuming API is on the same domain
-    const socket = io(); // Initialize Socket.IO connection
-    const processingTasks = new Map(); // Track processing tasks
 
     // Initialize
     fetchVideos();
-    
-    // Socket.IO event handlers
-    socket.on('connect', () => {
-        console.log('Connected to server');
-    });
-    
-    socket.on('processing_tasks', (tasks) => {
-        console.log('Received processing tasks:', tasks);
-        tasks.forEach(task => {
-            processingTasks.set(task.id, task);
-        });
-        updateProcessingCards();
-    });
-    
-    socket.on('processing_update', (task) => {
-        console.log('Processing update:', task);
-        processingTasks.set(task.id, task);
-        updateProcessingCards();
-        
-        // If status changed to completed or error, refresh the video list
-        if (task.status === 'completed' || task.status === 'error') {
-            setTimeout(() => {
-                fetchVideos();
-            }, 1000); // Small delay to ensure server has updated data.json
-        }
-    });
 
     // Event Listeners
     uploadArea.addEventListener('click', () => fileInput.click());
@@ -149,29 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
         currentXhr.addEventListener('load', () => {
             if (currentXhr.status >= 200 && currentXhr.status < 300) {
                 const response = JSON.parse(currentXhr.responseText);
-                uploadStatus.textContent = 'Upload complete! Processing video...';
-                
-                // Store the videoId for tracking progress
-                const videoId = response.videoId;
-                
-                // Request processing status updates for this video
-                socket.emit('get_processing_status', videoId);
-                
-                // Add a processing card immediately
-                const processingTask = {
-                    id: videoId,
-                    originalName: fileInput.files[0].name,
-                    status: 'processing',
-                    progress: 0,
-                    stage: 'Starting processing',
-                    uploadedAt: new Date().toISOString()
-                };
-                
-                processingTasks.set(videoId, processingTask);
-                updateProcessingCards();
-                
+                uploadStatus.textContent = 'Upload complete!';
                 setTimeout(() => {
                     resetUploadUI();
+                    fetchVideos(); // Refresh video list
                 }, 2000);
             } else {
                 let errorMsg = 'Upload failed.';
@@ -244,88 +197,18 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // Function to update processing cards in the video grid
-    function updateProcessingCards() {
-        // Get all processing tasks that aren't completed or errored
-        const activeTasks = Array.from(processingTasks.values())
-            .filter(task => task.status === 'processing' || task.status === 'analyzing');
-            
-        if (activeTasks.length === 0) return;
-        
-        // Check if we need to create or update processing cards
-        activeTasks.forEach(task => {
-            let processingCard = document.getElementById(`processing-${task.id}`);
-            
-            if (!processingCard) {
-                // Create a new processing card
-                processingCard = document.createElement('div');
-                processingCard.className = 'video-card processing-card';
-                processingCard.id = `processing-${task.id}`;
-                
-                // Insert at the beginning of the grid
-                if (videoGrid.firstChild) {
-                    videoGrid.insertBefore(processingCard, videoGrid.firstChild);
-                } else {
-                    videoGrid.appendChild(processingCard);
-                }
-            }
-            
-            // Update the card content
-            const progressPercent = task.progress || 0;
-            processingCard.innerHTML = `
-                <div class="video-thumbnail processing">
-                    <i class="fas fa-cog fa-spin"></i>
-                </div>
-                <div class="video-info">
-                    <h3>${task.originalName || 'Processing Video'}</h3>
-                    <p><i class="fas fa-spinner fa-spin"></i> ${task.stage || 'Processing...'}</p>
-                    <div class="processing-progress">
-                        <div class="progress-container">
-                            <div class="progress-bar" style="width: ${progressPercent}%"></div>
-                        </div>
-                        <p class="progress-text">${progressPercent}%</p>
-                    </div>
+    function renderVideos(videos) {
+        if (!videos || videos.length === 0) {
+            videoGrid.innerHTML = `
+                <div class="no-videos">
+                    <i class="fas fa-film"></i>
+                    <p>No videos uploaded yet. Upload your first video!</p>
                 </div>
             `;
-        });
-    }
-    
-    function renderVideos(videos) {
-        // First, remove any completed processing cards
-        const completedTaskIds = Array.from(processingTasks.values())
-            .filter(task => task.status === 'completed' || task.status === 'error')
-            .map(task => task.id);
-            
-        completedTaskIds.forEach(id => {
-            const card = document.getElementById(`processing-${id}`);
-            if (card) card.remove();
-            processingTasks.delete(id);
-        });
-        
-        if (!videos || videos.length === 0) {
-            // Only show no videos message if there are also no processing tasks
-            if (processingTasks.size === 0) {
-                videoGrid.innerHTML = `
-                    <div class="no-videos">
-                        <i class="fas fa-film"></i>
-                        <p>No videos uploaded yet. Upload your first video!</p>
-                    </div>
-                `;
-            }
             return;
         }
 
-        // Clear the grid only if there are no processing tasks
-        if (processingTasks.size === 0) {
-            videoGrid.innerHTML = '';
-        } else {
-            // Remove all non-processing cards
-            Array.from(videoGrid.children).forEach(child => {
-                if (!child.id || !child.id.startsWith('processing-')) {
-                    child.remove();
-                }
-            });
-        }
+        videoGrid.innerHTML = '';
         
         videos.forEach(video => {
             const uploadDate = new Date(video.uploadedAt);
@@ -334,8 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const videoCard = document.createElement('div');
             videoCard.className = 'video-card';
             videoCard.innerHTML = `
-                <div class="video-thumbnail">
-                    <i class="fas fa-video"></i>
+                <div class="video-thumbnail" style="background-image: url('${video.thumbnailPath}'); background-size: cover; background-position: center;">
                     <div class="play-button">
                         <i class="fas fa-play"></i>
                     </div>

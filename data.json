@@ -1,3 +1,30 @@
 {
-  "videos": []
+  "videos": [
+    {
+      "id": "1747824827973",
+      "originalName": "8k 60 fps.mp4",
+      "hlsPath": "/output/1747824827973/playlist.m3u8",
+      "thumbnailPath": "/output/1747824827973/thumbnail.jpg",
+      "size": 45545755,
+      "sizeMB": 43.44,
+      "mimeType": "application/x-mpegURL",
+      "uploadedAt": "2025-05-21T11:54:31.039Z",
+      "status": "completed",
+      "format": "HLS",
+      "segmentDuration": 2
+    },
+    {
+      "id": "1747824473000",
+      "originalName": "29d401ff-a286-4227-8697-f074f94b32f6.mp4",
+      "hlsPath": "/output/1747824473000/playlist.m3u8",
+      "thumbnailPath": "/output/1747824473000/thumbnail.jpg",
+      "size": 3974105,
+      "sizeMB": 3.79,
+      "mimeType": "application/x-mpegURL",
+      "uploadedAt": "2025-05-21T10:47:59.947Z",
+      "status": "completed",
+      "format": "HLS",
+      "segmentDuration": 2
+    }
+  ]
 }

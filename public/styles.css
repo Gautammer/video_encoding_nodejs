@@ -259,65 +259,6 @@ header h1 {
     color: white;
 }
 
-/* Processing Card Styles */
-.processing-card {
-    border: 2px solid var(--primary-color);
-    position: relative;
-    overflow: hidden;
-}
-
-.processing-card::before {
-    content: 'Processing';
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    z-index: 2;
-}
-
-.video-thumbnail.processing {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(52, 152, 219, 0.1);
-}
-
-.video-thumbnail.processing i {
-    font-size: 48px;
-    color: var(--primary-color);
-}
-
-.processing-progress {
-    margin-top: 10px;
-}
-
-.processing-progress .progress-container {
-    height: 8px;
-    background-color: #eee;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 5px;
-}
-
-.processing-progress .progress-bar {
-    height: 100%;
-    background-color: var(--primary-color);
-    width: 0%;
-    transition: width 0.5s ease;
-}
-
-.processing-progress .progress-text {
-    font-size: 0.8rem;
-    color: #666;
-    text-align: right;
-    margin: 0;
-}
-
 .loading {
     text-align: center;
     padding: 40px;
