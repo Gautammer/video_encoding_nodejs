@@ -1,16 +1,3 @@
 {
-  "videos": [
-    {
-      "id": "1747760923111",
-      "originalName": "29d401ff-a286-4227-8697-f074f94b32f6.mp4",
-      "hlsPath": "/output/1747760923111/playlist.m3u8",
-      "size": 4479472,
-      "sizeMB": 4.27,
-      "mimeType": "application/x-mpegURL",
-      "uploadedAt": "2025-05-20T17:08:53.981Z",
-      "status": "completed",
-      "format": "HLS",
-      "segmentDuration": 2
-    }
-  ]
+  "videos": []
 }
