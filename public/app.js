@@ -29,7 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchVideos();
 
     // Event Listeners
-    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('click', (e) => {
+        // Don't trigger file input if clicking on the label (it already triggers it)
+        if (e.target.tagName === 'LABEL' || e.target.closest('label')) {
+            return;
+        }
+        fileInput.click();
+    });
     fileInput.addEventListener('change', handleFileSelect);
     uploadArea.addEventListener('dragover', handleDragOver);
     uploadArea.addEventListener('dragleave', handleDragLeave);
